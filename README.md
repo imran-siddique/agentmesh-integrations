@@ -8,6 +8,10 @@ Community-contributed integrations for [AgentMesh](https://github.com/imran-sidd
 
 | Integration | Package | Status | Description |
 |---|---|---|---|
+| [Dify](dify/) | — | ✅ Stable | Trust & identity middleware for [Dify](https://dify.ai) workflows |
+| [Dify Plugin](dify-plugin/) | `agentmesh-trust-layer` | ✅ Stable | Packaged Dify plugin (`.difypkg`) with trust verification tools |
+| [LangChain](langchain-agentmesh/) | `langchain-agentmesh` | ✅ Stable | LangChain tools, callbacks, and trust integration |
+| [Moltbook](moltbook/) | — | ✅ Stable | AgentMesh skill for [Moltbook](https://moltbook.com) agent registry |
 | [Nostr Web of Trust](nostr-wot/) | `agentmesh-nostr-wot` | 🚧 Scaffold | Trust scoring via [MaximumSats](https://github.com/joelklabo/maximumsats-mcp) NIP-85 WoT |
 
 ## Architecture
