@@ -4,7 +4,7 @@
 
 **Platform Plugins & Trust Providers for AgentMesh**
 
-*Dify · LangChain · LlamaIndex · Agent Lightning · Nostr WoT · Moltbook*
+*Dify · LangChain · LangGraph · LlamaIndex · Agent Lightning · Nostr WoT · Moltbook*
 
 [![GitHub Stars](https://img.shields.io/github/stars/imran-siddique/agentmesh-integrations?style=social)](https://github.com/imran-siddique/agentmesh-integrations/stargazers)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -36,6 +36,7 @@ AgentMesh core is a lean, zero-external-dependency library. Platform integration
 | Integration | Package | Status | Description |
 |---|---|---|---|
 | [LangChain](langchain-agentmesh/) | `langchain-agentmesh` | ✅ Stable | Ed25519 identity, trust-gated tools, delegation chains, callbacks |
+| [LangGraph](langgraph-trust/) | [`langgraph-trust`](https://pypi.org/project/langgraph-trust/) | ✅ Published (PyPI) | Trust-gated checkpoint nodes, governance policy enforcement, trust-aware routing |
 | [LlamaIndex](llamaindex-agentmesh/) | `llama-index-agent-agentmesh` | ✅ Merged Upstream | Trust-verified workers, identity-aware query engines, delegation chains |
 | [Agent Lightning](agent-lightning/) | — | ✅ Merged Upstream | Agent-OS governance adapters, reward shaping, governed RL training |
 | [Dify Plugin](dify-plugin/) | `agentmesh-trust-layer` | ✅ Stable | Packaged `.difypkg` with peer verification, step auth, trust scoring |
