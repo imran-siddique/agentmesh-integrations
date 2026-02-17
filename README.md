@@ -4,7 +4,7 @@
 
 **Platform Plugins & Trust Providers for AgentMesh**
 
-*Dify · LangChain · LangGraph · LlamaIndex · Agent Lightning · Nostr WoT · Moltbook*
+*Dify · LangChain · LangGraph · LlamaIndex · Agent Lightning · OpenClaw · Nostr WoT · Moltbook*
 
 [![GitHub Stars](https://img.shields.io/github/stars/imran-siddique/agentmesh-integrations?style=social)](https://github.com/imran-siddique/agentmesh-integrations/stargazers)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -43,6 +43,7 @@ AgentMesh core is a lean, zero-external-dependency library. Platform integration
 | [Dify Middleware](dify/) | — | 📦 Archived | Flask middleware (archived — use the plugin instead) |
 | [Moltbook](moltbook/) | — | ✅ Stable | AgentMesh governance skill for [Moltbook](https://moltbook.com) agent registry |
 | [Nostr Web of Trust](nostr-wot/) | `agentmesh-nostr-wot` | 🚧 Scaffold | Trust scoring via [MaximumSats](https://github.com/joelklabo/maximumsats-mcp) NIP-85 WoT |
+| [OpenClaw Skill](openclaw-skill/) | `agentmesh-governance` | ✅ Stable | Governance skill for [OpenClaw](https://openclaw.im) agents — policy enforcement, trust scoring, Ed25519 DIDs, Merkle audit |
 
 ## Quick Start
 
