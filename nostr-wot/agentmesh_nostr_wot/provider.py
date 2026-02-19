@@ -54,11 +54,10 @@ class NostrWoTProvider:
             return 0.0
 
         try:
-            resp = await self._client.get(f"{self.wot_api}/score/{pubkey}")
+            resp = await self._client.get(f"{self.wot_api}/score?pubkey={pubkey}")
             resp.raise_for_status()
             data = resp.json()
             raw_score = float(data.get("score", 0))
-            # Normalise to 0–1 range (WoT scores may vary in range)
             return max(0.0, min(1.0, raw_score))
         except (httpx.HTTPError, KeyError, ValueError):
             return 0.0
@@ -66,16 +65,30 @@ class NostrWoTProvider:
     async def check_sybil(self, agent_id: str) -> dict[str, Any]:
         """Check for potential Sybil attacks on this identity.
 
-        Returns a dict with ``is_sybil`` (bool) and ``confidence`` (float).
+        Uses the /similar endpoint to detect potential Sybil attacks.
         """
         pubkey = self._resolve_pubkey(agent_id)
         if not pubkey:
             return {"is_sybil": False, "confidence": 0.0, "reason": "unknown_pubkey"}
 
         try:
-            resp = await self._client.get(f"{self.wot_api}/sybil/{pubkey}")
+            resp = await self._client.get(f"{self.wot_api}/similar?pubkey={pubkey}")
             resp.raise_for_status()
-            return resp.json()
+            data = resp.json()
+            total_found = data.get("total_found", 0)
+            if total_found == 0:
+                return {
+                    "is_sybil": False,
+                    "confidence": 0.3,
+                    "reason": "no_similar_found",
+                }
+            is_sybil = total_found > 50
+            confidence = min(1.0, total_found / 100.0)
+            return {
+                "is_sybil": is_sybil,
+                "confidence": confidence,
+                "similar_count": total_found,
+            }
         except httpx.HTTPError:
             return {"is_sybil": False, "confidence": 0.0, "reason": "api_error"}
 
@@ -86,16 +99,15 @@ class NostrWoTProvider:
             return []
 
         try:
-            resp = await self._client.get(f"{self.wot_api}/circle/{pubkey}")
+            resp = await self._client.get(f"{self.wot_api}/similar?pubkey={pubkey}")
             resp.raise_for_status()
             data = resp.json()
-            return data.get("connections", [])
+            similar = data.get("similar", [])
+            return [item.get("pubkey", "") for item in similar if item.get("pubkey")]
         except httpx.HTTPError:
             return []
 
-    async def verify_identity(
-        self, agent_id: str, credentials: dict[str, Any]
-    ) -> bool:
+    async def verify_identity(self, agent_id: str, credentials: dict[str, Any]) -> bool:
         """Verify agent identity by checking WoT score against threshold."""
         score = await self.get_trust_score(agent_id)
         return score >= self.min_score_threshold
