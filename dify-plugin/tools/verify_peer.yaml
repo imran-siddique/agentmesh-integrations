@@ -17,9 +17,9 @@ parameters:
       en_US: Peer DID
       zh_Hans: 对等代理DID
     human_description:
-      en_US: The decentralized identifier (DID) of the peer agent to verify (e.g., did:cmvk:abc123)
-      zh_Hans: 要验证的对等代理的去中心化标识符 (DID)（例如 did:cmvk:abc123）
-    llm_description: The decentralized identifier (DID) of the peer agent, typically in format did:cmvk:xxxxx
+      en_US: The decentralized identifier (DID) of the peer agent to verify (e.g., did:key:abc123)
+      zh_Hans: 要验证的对等代理的去中心化标识符 (DID)（例如 did:key:abc123）
+    llm_description: The decentralized identifier (DID) of the peer agent, typically in format did:key:xxxxx
     form: llm
   - name: peer_public_key
     type: string

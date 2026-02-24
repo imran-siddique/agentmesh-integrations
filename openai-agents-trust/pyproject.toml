@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "openai-agents-trust"
 version = "0.1.0"
-description = "Trust & governance layer for OpenAI Agents SDK — policy enforcement, trust-gated handoffs, and Merkle audit trails"
+description = "Trust & governance layer for OpenAI Agents SDK — policy enforcement, trust-gated handoffs, and hash-chained audit trails"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.9"

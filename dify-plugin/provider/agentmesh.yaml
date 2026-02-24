@@ -5,8 +5,8 @@ identity:
     en_US: AgentMesh Trust Layer
     zh_Hans: AgentMesh 信任层
   description:
-    en_US: Provides cryptographic trust verification for multi-agent workflows using CMVK (Ed25519) digital signatures. Enables agent-to-agent trust establishment, capability verification, and audit logging.
-    zh_Hans: 使用 CMVK (Ed25519) 数字签名为多代理工作流提供加密信任验证。支持代理之间的信任建立、能力验证和审计日志记录。
+    en_US: Provides cryptographic trust verification for multi-agent workflows using Ed25519 digital signatures. Enables agent-to-agent trust establishment, capability verification, and audit logging.
+    zh_Hans: 使用 Ed25519 数字签名为多代理工作流提供加密信任验证。支持代理之间的信任建立、能力验证和审计日志记录。
   icon: icon.svg
 credentials_for_provider:
   min_trust_score:
