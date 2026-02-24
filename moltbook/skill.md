@@ -172,4 +172,4 @@ curl -s https://agentmesh-api.vercel.app/skill.json > ~/.moltbot/skills/agentmes
 
 - Skill version: 1.0.0
 - AgentMesh compatibility: >=1.0.0a3
-- Protocol: CMVK v1
+- Protocol: verification v1

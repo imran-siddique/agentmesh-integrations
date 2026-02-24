@@ -60,7 +60,7 @@ class TestAgentTrustContext:
         ctx.add_delegation("d1")
         d = ctx.to_dict()
         assert d["user_id"] == "u1"
-        assert d["delegation_chain"] == ["d1"]
+        assert d["scope_chain"] == ["d1"]
         assert d["delegation_depth"] == 1
 
 
@@ -241,7 +241,7 @@ class TestIntegration:
         assert ctx.current_agent == "did:mesh:specialist"
         assert ctx.user_id == "user-42"
         d = ctx.to_dict()
-        assert len(d["delegation_chain"]) == 2
+        assert len(d["scope_chain"]) == 2
 
     def test_imports(self):
         from openai_agents_agentmesh import (

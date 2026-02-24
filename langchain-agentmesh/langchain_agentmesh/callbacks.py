@@ -14,7 +14,7 @@ from uuid import UUID
 from langchain_core.callbacks import BaseCallbackHandler
 from langchain_core.outputs import LLMResult
 
-from langchain_agentmesh.identity import CMVKIdentity
+from langchain_agentmesh.identity import VerificationIdentity
 from langchain_agentmesh.trust import TrustPolicy, TrustHandshake, TrustedAgentCard
 
 
@@ -39,7 +39,7 @@ class TrustCallbackHandler(BaseCallbackHandler):
 
     def __init__(
         self,
-        identity: CMVKIdentity,
+        identity: VerificationIdentity,
         policy: Optional[TrustPolicy] = None,
         peer_cards: Optional[List[TrustedAgentCard]] = None,
     ):

@@ -74,41 +74,41 @@ class AgentTrustContext:
     Trust context propagated through agent conversations.
 
     Enables "On-Behalf-Of" flows: when Agent A delegates to Agent B,
-    the context carries the original user identity and the delegation chain.
+    the context carries the original user identity and the scope chain.
     """
 
     user_id: str = ""
     originating_did: str = ""
-    delegation_chain: List[str] = field(default_factory=list)
+    scope_chain: List[str] = field(default_factory=list)
     max_delegation_depth: int = 5
     metadata: Dict[str, Any] = field(default_factory=dict)
 
     def add_delegation(self, agent_did: str) -> bool:
         """
-        Add an agent to the delegation chain.
+        Add an agent to the scope chain.
 
         Returns False if max depth would be exceeded.
         """
-        if len(self.delegation_chain) >= self.max_delegation_depth:
+        if len(self.scope_chain) >= self.max_delegation_depth:
             return False
-        self.delegation_chain.append(agent_did)
+        self.scope_chain.append(agent_did)
         return True
 
     @property
     def delegation_depth(self) -> int:
-        return len(self.delegation_chain)
+        return len(self.scope_chain)
 
     @property
     def current_agent(self) -> str:
-        if self.delegation_chain:
-            return self.delegation_chain[-1]
+        if self.scope_chain:
+            return self.scope_chain[-1]
         return self.originating_did
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             "user_id": self.user_id,
             "originating_did": self.originating_did,
-            "delegation_chain": self.delegation_chain,
+            "scope_chain": self.scope_chain,
             "delegation_depth": self.delegation_depth,
         }
 

@@ -8,7 +8,7 @@ import logging
 
 from flask import request, g, jsonify
 
-from extensions.agentmesh.identity import CMVKIdentity
+from extensions.agentmesh.identity import VerificationIdentity
 from extensions.agentmesh.trust import TrustManager
 
 logger = logging.getLogger(__name__)
@@ -28,7 +28,7 @@ class TrustMiddleware:
     @classmethod
     def initialize(
         cls,
-        identity: Optional[CMVKIdentity] = None,
+        identity: Optional[VerificationIdentity] = None,
         min_trust_score: float = 0.5,
     ) -> "TrustMiddleware":
         """Initialize the trust middleware."""

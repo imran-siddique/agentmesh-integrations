@@ -11,7 +11,7 @@ from typing import Any, Callable, Dict, List, Optional, Union
 
 from langchain_core.tools import BaseTool, StructuredTool
 
-from langchain_agentmesh.identity import CMVKIdentity, UserContext
+from langchain_agentmesh.identity import VerificationIdentity, UserContext
 from langchain_agentmesh.trust import (
     TrustHandshake,
     TrustPolicy,
@@ -140,7 +140,7 @@ class TrustedToolExecutor:
 
     def __init__(
         self,
-        identity: CMVKIdentity,
+        identity: VerificationIdentity,
         policy: Optional[TrustPolicy] = None,
         tools: Optional[List[TrustGatedTool]] = None,
     ):

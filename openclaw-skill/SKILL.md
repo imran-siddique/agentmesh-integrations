@@ -5,7 +5,7 @@ description: >
   Activate when: (1) user wants to enforce token limits, tool restrictions, or content
   policies on agent actions, (2) checking an agent's trust score before delegation or
   collaboration, (3) verifying agent identity with Ed25519 cryptographic DIDs,
-  (4) auditing agent actions with tamper-evident Merkle chain logs,
+  (4) auditing agent actions with tamper-evident hash chain logs,
   (5) user asks about agent safety, governance, compliance, or trust.
   Enterprise-grade: 1,600+ tests, merged into Dify (65K★), LlamaIndex (47K★),
   Microsoft Agent-Lightning (15K★).
@@ -89,14 +89,14 @@ Agents dropping below the minimum threshold (default 0.5) are auto-blocked.
 
 ### Audit Log
 
-View tamper-evident audit trail with Merkle chain verification:
+View tamper-evident audit trail with hash chain verification:
 
 ```bash
 scripts/audit-log.sh --last 20
 scripts/audit-log.sh --agent "research-agent" --verify
 ```
 
-The `--verify` flag checks Merkle chain integrity — any tampering is detected.
+The `--verify` flag checks hash chain integrity — any tampering is detected.
 
 ### Generate Identity
 
@@ -161,7 +161,7 @@ OpenClaw Agent → SKILL.md scripts → AgentMesh Engine
                                      ├── GovernancePolicy (enforcement)
                                      ├── TrustEngine (5-dimension scoring)
                                      ├── AgentIdentity (Ed25519 DIDs)
-                                     └── MerkleAuditChain (tamper-evident logs)
+                                     └── hash-chainAuditChain (tamper-evident logs)
 ```
 
 Part of the [Agent Ecosystem](https://imran-siddique.github.io):

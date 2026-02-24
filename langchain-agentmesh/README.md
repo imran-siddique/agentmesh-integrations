@@ -10,7 +10,7 @@ pip install langchain-agentmesh
 
 ## Features
 
-- **CMVKIdentity**: Ed25519-based cryptographic identity for agents
+- **VerificationIdentity**: Ed25519-based cryptographic identity for agents
 - **TrustGatedTool**: Wrap any tool with trust requirements
 - **TrustedToolExecutor**: Execute tools with automatic verification
 - **TrustCallbackHandler**: Monitor trust events during chain execution
@@ -20,10 +20,10 @@ pip install langchain-agentmesh
 ## Quick Start
 
 ```python
-from langchain_agentmesh import CMVKIdentity, TrustGatedTool, TrustedToolExecutor
+from langchain_agentmesh import VerificationIdentity, TrustGatedTool, TrustedToolExecutor
 
 # Generate agent identity
-identity = CMVKIdentity.generate('research-agent', capabilities=['search', 'summarize'])
+identity = VerificationIdentity.generate('research-agent', capabilities=['search', 'summarize'])
 
 # Wrap a tool with trust requirements
 gated_tool = TrustGatedTool(

@@ -87,7 +87,7 @@ triage = Agent(
 | **Content Guardrail** | `OutputGuardrail` | Validates output against policies |
 | **Governance Hooks** | `RunHooksBase` | Tracks tools, audits handoffs, scores trust |
 | **Trust-Gated Handoff** | `is_enabled` | Disables handoffs to untrusted agents |
-| **Merkle Audit** | — | Tamper-evident chain of all decisions |
+| **hash-chain Audit** | — | Tamper-evident chain of all decisions |
 
 ## License
 

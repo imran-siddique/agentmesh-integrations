@@ -16,10 +16,10 @@ This extension adds a trust layer to Dify, enabling:
 The extension is included in the Dify API. To enable it:
 
 ```python
-from extensions.agentmesh import TrustMiddleware, CMVKIdentity
+from extensions.agentmesh import TrustMiddleware, VerificationIdentity
 
 # Initialize with an identity
-identity = CMVKIdentity.generate(
+identity = VerificationIdentity.generate(
     name="dify-workflow-engine",
     capabilities=["workflow:*", "llm:*", "tool:*"],
     tenant_id="your-tenant-id",
@@ -71,13 +71,13 @@ else:
 When Dify agents communicate with external agents:
 
 ```python
-from extensions.agentmesh import TrustMiddleware, CMVKIdentity
+from extensions.agentmesh import TrustMiddleware, VerificationIdentity
 
 trust_manager = TrustMiddleware.get_trust_manager()
 
 # Verify external agent before interaction
 result = trust_manager.verify_peer(
-    peer_did="did:cmvk:external-agent",
+    peer_did="did:verification:external-agent",
     peer_public_key="base64-encoded-key",
     required_capabilities=["data:read"],
     peer_capabilities=["data:read", "data:write"],
@@ -130,10 +130,10 @@ audit_log = trust_manager.get_audit_log(limit=100)
 # {
 #     "timestamp": "2026-02-06T22:30:00Z",
 #     "action": "verify_peer",
-#     "target": "did:cmvk:peer123",
+#     "target": "did:verification:peer123",
 #     "success": true,
 #     "trust_score": 0.72,
-#     "identity_did": "did:cmvk:local",
+#     "identity_did": "did:verification:local",
 # }
 ```
 

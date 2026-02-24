@@ -12,7 +12,7 @@ This package provides four governance nodes designed to sit inline within Flowis
 |------|---------|
 | **GovernanceNode** | Evaluate tool calls against YAML policy (allowlist/blocklist, content patterns, argument scanning) |
 | **TrustGateNode** | Route agents to trust tiers (trusted / review / blocked) based on score thresholds |
-| **AuditNode** | Log all actions to a Merkle-chain audit trail with SHA-256 tamper evidence |
+| **AuditNode** | Log all actions to a hash chain audit trail with SHA-256 tamper evidence |
 | **RateLimiterNode** | Token bucket rate limiting per agent and per action |
 
 All nodes are **zero-dependency on LLMs**, fully deterministic, and composable.

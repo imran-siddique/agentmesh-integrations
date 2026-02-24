@@ -8,7 +8,7 @@ import threading
 from typing import Any, Dict, List, Optional, Tuple
 import logging
 
-from extensions.agentmesh.identity import CMVKIdentity, capability_matches
+from extensions.agentmesh.identity import VerificationIdentity, capability_matches
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +43,7 @@ class TrustManager:
     
     def __init__(
         self,
-        identity: Optional[CMVKIdentity] = None,
+        identity: Optional[VerificationIdentity] = None,
         cache_ttl_seconds: int = 900,
         min_trust_score: float = 0.5,
     ):
@@ -55,7 +55,7 @@ class TrustManager:
         self._lock = threading.Lock()  # Protect mutable state
         self._audit_log: List[Dict[str, Any]] = []
     
-    def set_identity(self, identity: CMVKIdentity) -> None:
+    def set_identity(self, identity: VerificationIdentity) -> None:
         """Set or update the local identity."""
         self.identity = identity
         logger.info("Trust identity set: %s", identity.did)

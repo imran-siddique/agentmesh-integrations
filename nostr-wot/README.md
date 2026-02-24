@@ -31,7 +31,7 @@ provider = NostrWoTProvider(
 # Register with AgentMesh trust engine
 engine = TrustEngine(external_providers=[provider])
 
-# Get composite trust score (AgentMesh CMVK + Nostr WoT)
+# Get composite trust score (AgentMesh verification + Nostr WoT)
 score = await engine.get_trust_score("agent-123")
 ```
 

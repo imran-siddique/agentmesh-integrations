@@ -1,6 +1,6 @@
 # AgentMesh Trust Layer - Dify Plugin
 
-Cryptographic trust verification for multi-agent Dify workflows using CMVK (Ed25519) identities.
+Cryptographic trust verification for multi-agent Dify workflows using verification (Ed25519) identities.
 
 ## Features
 
@@ -37,7 +37,7 @@ When configuring the plugin in Dify, you can set:
 Verify another agent's identity before trusting their data or delegating tasks.
 
 **Parameters:**
-- `peer_did` (required): The DID of the peer agent (e.g., `did:cmvk:abc123`)
+- `peer_did` (required): The DID of the peer agent (e.g., `did:verification:abc123`)
 - `peer_public_key` (required): Base64-encoded Ed25519 public key
 - `required_capabilities`: Capabilities the peer must have
 - `peer_capabilities`: Capabilities the peer claims to have

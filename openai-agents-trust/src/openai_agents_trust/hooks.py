@@ -20,7 +20,7 @@ class GovernanceHooks(RunHooksBase[Any, Agent]):
     """Run-level hooks that enforce governance across all agents in a run.
 
     Tracks tool calls against rate limits, logs policy decisions, and records
-    Merkle-chain audit entries for every lifecycle event.
+    hash chain audit entries for every lifecycle event.
     """
 
     def __init__(

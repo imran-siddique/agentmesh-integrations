@@ -1,4 +1,4 @@
-"""Tamper-evident audit logging with Merkle chain."""
+"""Tamper-evident audit logging with hash chain."""
 
 from __future__ import annotations
 
@@ -35,7 +35,7 @@ class AuditEntry:
 
 
 class AuditLog:
-    """Tamper-evident audit log using Merkle chain hashing."""
+    """Tamper-evident audit log using hash chain hashing."""
 
     def __init__(self):
         self._entries: List[AuditEntry] = []
@@ -52,7 +52,7 @@ class AuditLog:
         decision: str,
         details: Optional[dict] = None,
     ) -> AuditEntry:
-        """Record a new audit entry with Merkle chain hash."""
+        """Record a new audit entry with hash chain hash."""
         with self._lock:
             previous_hash = self._entries[-1].entry_hash if self._entries else ""
             entry_data = {

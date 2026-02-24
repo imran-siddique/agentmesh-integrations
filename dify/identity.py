@@ -1,4 +1,4 @@
-"""CMVK Identity for Dify agents."""
+"""verification Identity for Dify agents."""
 
 from __future__ import annotations
 
@@ -51,8 +51,8 @@ def capability_matches(owned_capability: str, required_capability: str) -> bool:
 
 
 @dataclass
-class CMVKSignature:
-    """Cryptographic signature from a CMVK identity."""
+class VerificationSignature:
+    """Cryptographic signature from a verification identity."""
     
     public_key: str
     signature: str
@@ -66,7 +66,7 @@ class CMVKSignature:
         }
     
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "CMVKSignature":
+    def from_dict(cls, data: Dict[str, Any]) -> "VerificationSignature":
         timestamp = data.get("timestamp")
         if isinstance(timestamp, str):
             timestamp = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
@@ -81,8 +81,8 @@ class CMVKSignature:
 
 
 @dataclass
-class CMVKIdentity:
-    """Cryptographic identity for a Dify agent/workflow using CMVK (Ed25519)."""
+class VerificationIdentity:
+    """Cryptographic identity for a Dify agent/workflow using verification (Ed25519)."""
     
     did: str
     name: str
@@ -100,11 +100,11 @@ class CMVKIdentity:
         capabilities: Optional[List[str]] = None,
         tenant_id: Optional[str] = None,
         app_id: Optional[str] = None,
-    ) -> "CMVKIdentity":
-        """Generate a new CMVK identity."""
+    ) -> "VerificationIdentity":
+        """Generate a new verification identity."""
         seed = f"{name}:{tenant_id or ''}:{app_id or ''}:{time.time_ns()}"
         did_hash = hashlib.sha256(seed.encode()).hexdigest()[:32]
-        did = f"did:cmvk:{did_hash}"
+        did = f"did:verification:{did_hash}"
         
         if CRYPTO_AVAILABLE:
             private_key_obj = ed25519.Ed25519PrivateKey.generate()
@@ -131,7 +131,7 @@ class CMVKIdentity:
             app_id=app_id,
         )
     
-    def sign(self, data: str) -> CMVKSignature:
+    def sign(self, data: str) -> VerificationSignature:
         """Sign data with this identity's private key."""
         if not self.private_key:
             raise ValueError("Cannot sign without private key")
@@ -147,9 +147,9 @@ class CMVKIdentity:
                 hashlib.sha256(sig_input.encode()).digest()
             ).decode('ascii')
         
-        return CMVKSignature(public_key=self.public_key, signature=signature_b64)
+        return VerificationSignature(public_key=self.public_key, signature=signature_b64)
     
-    def verify_signature(self, data: str, signature: CMVKSignature) -> bool:
+    def verify_signature(self, data: str, signature: VerificationSignature) -> bool:
         """Verify a signature."""
         if signature.public_key != self.public_key:
             return False
@@ -181,7 +181,7 @@ class CMVKIdentity:
         }
     
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "CMVKIdentity":
+    def from_dict(cls, data: Dict[str, Any]) -> "VerificationIdentity":
         """Create from dictionary."""
         created_at = data.get("created_at")
         if isinstance(created_at, str):

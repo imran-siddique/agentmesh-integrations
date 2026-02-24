@@ -8,7 +8,7 @@ import threading
 from typing import Any
 import logging
 
-from .identity import CMVKIdentity, capability_matches
+from .identity import VerificationIdentity, capability_matches
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +40,7 @@ class TrustManager:
     
     def __init__(
         self,
-        identity: CMVKIdentity | None = None,
+        identity: VerificationIdentity | None = None,
         cache_ttl_seconds: int = 900,
         min_trust_score: float = 0.5,
     ):
@@ -52,7 +52,7 @@ class TrustManager:
         self._lock = threading.Lock()
         self._audit_log: list[dict[str, Any]] = []
     
-    def set_identity(self, identity: CMVKIdentity) -> None:
+    def set_identity(self, identity: VerificationIdentity) -> None:
         """Set or update the local identity."""
         self.identity = identity
         logger.info("Trust identity set: %s", identity.did)

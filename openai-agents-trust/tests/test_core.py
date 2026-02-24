@@ -155,7 +155,7 @@ class TestAuditLog:
         assert entry.decision == "allow"
         assert len(log) == 1
 
-    def test_merkle_chain(self):
+    def test_hash_chain(self):
         log = AuditLog()
         e1 = log.record("a1", "start", "allow")
         e2 = log.record("a1", "tool", "allow")

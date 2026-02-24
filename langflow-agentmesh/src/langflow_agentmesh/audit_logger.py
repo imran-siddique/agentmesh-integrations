@@ -1,4 +1,4 @@
-"""Audit trail component with SHA-256 Merkle chain.
+"""Audit trail component with SHA-256 hash chain.
 
 Captures agent actions, governance decisions, and context in a
 tamper-evident chain. Supports JSONL export for compliance.
@@ -18,7 +18,7 @@ GENESIS_HASH = "0" * 64
 
 @dataclass
 class AuditEntry:
-    """Single audit record in the Merkle chain."""
+    """Single audit record in the hash chain."""
 
     agent_id: str
     action: str
@@ -46,7 +46,7 @@ class AuditEntry:
 
 
 class AuditLogger:
-    """Append-only audit logger with SHA-256 Merkle chain.
+    """Append-only audit logger with SHA-256 hash chain.
 
     Each entry's hash includes the previous entry's hash, creating
     a tamper-evident chain. If any entry is modified, all subsequent
@@ -135,7 +135,7 @@ class AuditLogger:
         return len(self._entries)
 
     def verify_chain(self) -> bool:
-        """Verify the integrity of the entire Merkle chain.
+        """Verify the integrity of the entire hash chain.
 
         Returns True if all hashes are valid and properly linked.
         """

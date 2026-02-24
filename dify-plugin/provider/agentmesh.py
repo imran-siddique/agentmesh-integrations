@@ -4,7 +4,7 @@ from typing import Any
 
 from dify_plugin import ToolProvider
 
-from .identity import CMVKIdentity
+from .identity import VerificationIdentity
 from .trust_manager import TrustManager
 
 
@@ -12,7 +12,7 @@ class AgentMeshProvider(ToolProvider):
     """Provider for AgentMesh trust verification tools."""
 
     _trust_manager: TrustManager | None = None
-    _identity: CMVKIdentity | None = None
+    _identity: VerificationIdentity | None = None
 
     def _validate_credentials(self, credentials: dict[str, Any]) -> None:
         """Validate and initialize provider with credentials."""
@@ -28,7 +28,7 @@ class AgentMeshProvider(ToolProvider):
             capabilities = [c.strip() for c in capabilities_str.split(",") if c.strip()]
         
         # Generate identity
-        self._identity = CMVKIdentity.generate(
+        self._identity = VerificationIdentity.generate(
             name=identity_name,
             capabilities=capabilities,
         )
@@ -48,7 +48,7 @@ class AgentMeshProvider(ToolProvider):
         return self._trust_manager
 
     @property
-    def identity(self) -> CMVKIdentity:
+    def identity(self) -> VerificationIdentity:
         """Get the agent's identity."""
         if self._identity is None:
             raise ValueError("Identity not initialized. Check credentials.")

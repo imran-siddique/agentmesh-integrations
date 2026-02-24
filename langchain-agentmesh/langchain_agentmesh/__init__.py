@@ -4,7 +4,7 @@ This package provides cryptographic identity verification and trust-gated
 tool execution for LangChain agents.
 """
 
-from langchain_agentmesh.identity import CMVKIdentity, CMVKSignature, UserContext
+from langchain_agentmesh.identity import VerificationIdentity, VerificationSignature, UserContext
 from langchain_agentmesh.trust import (
     TrustedAgentCard,
     TrustHandshake,
@@ -19,8 +19,8 @@ from langchain_agentmesh.callbacks import TrustCallbackHandler
 
 __all__ = [
     # Identity
-    "CMVKIdentity",
-    "CMVKSignature",
+    "VerificationIdentity",
+    "VerificationSignature",
     "UserContext",
     # Trust
     "TrustedAgentCard",

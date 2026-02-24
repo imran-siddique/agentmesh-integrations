@@ -1,6 +1,6 @@
 """AuditLogger component for Haystack pipelines.
 
-Append-only audit log with SHA-256 Merkle chain hashing and JSONL export.
+Append-only audit log with SHA-256 hash chain hashing and JSONL export.
 """
 
 from __future__ import annotations
@@ -60,7 +60,7 @@ def _hash_entry(entry: AuditEntry) -> str:
 
 @component
 class AuditLogger:
-    """Append-only audit logger with SHA-256 Merkle chain integrity.
+    """Append-only audit logger with SHA-256 hash chain integrity.
 
     Each entry is chained to the previous entry's hash, making the
     log tamper-evident.  Supports JSONL export for offline analysis.

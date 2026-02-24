@@ -151,7 +151,7 @@ The `trust_edge` and `trust_router` functions read this verdict to route the gra
 
 ## Integration with Full AgentMesh
 
-This package provides a lightweight, self-contained trust layer. For the full 5-dimension trust scoring engine with temporal decay, trust contagion, and Merkle audit chains, install:
+This package provides a lightweight, self-contained trust layer. For the full 5-dimension trust scoring engine with temporal decay, trust contagion, and hash-chain audit chains, install:
 
 ```bash
 pip install langgraph-trust[agentmesh]

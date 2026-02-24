@@ -12,7 +12,7 @@ Adds governance guardrails to Langflow flows as custom components. Each componen
 |-----------|---------|-------------|
 | **Governance Gate** | Policy enforcement | Tool allowlist/blocklist, content pattern scanning |
 | **Trust Router** | Trust-based routing | Three outputs: trusted / review / blocked |
-| **Audit Logger** | Tamper-evident logging | SHA-256 Merkle chain, JSONL export |
+| **Audit Logger** | Tamper-evident logging | SHA-256 hash chain, JSONL export |
 | **Compliance Checker** | Framework validation | EU AI Act, SOC2, HIPAA |
 
 ## Install

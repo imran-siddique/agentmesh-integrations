@@ -65,7 +65,7 @@ Actions: `pass` (trusted), `review` (marginal), `block` (below threshold).
 
 ### AuditLogger
 
-Append-only audit log with SHA-256 Merkle chain hashing for tamper evidence.
+Append-only audit log with SHA-256 hash chain hashing for tamper evidence.
 
 ```python
 from haystack_agentmesh import AuditLogger

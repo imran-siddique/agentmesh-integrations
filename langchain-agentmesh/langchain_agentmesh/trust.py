@@ -1,7 +1,7 @@
 """Trust verification and handshake protocols for AgentMesh.
 
 This module provides trust verification between agents, including
-agent cards, handshakes, and delegation chains.
+agent cards, handshakes, and scope chains.
 """
 
 from __future__ import annotations
@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 
-from langchain_agentmesh.identity import CMVKIdentity, CMVKSignature, UserContext
+from langchain_agentmesh.identity import VerificationIdentity, VerificationSignature, UserContext
 
 
 @dataclass
@@ -47,10 +47,10 @@ class TrustedAgentCard:
     name: str
     description: str
     capabilities: List[str]
-    identity: Optional[CMVKIdentity] = None
+    identity: Optional[VerificationIdentity] = None
     trust_score: float = 1.0
-    card_signature: Optional[CMVKSignature] = None
-    delegation_chain: Optional[List["Delegation"]] = None
+    card_signature: Optional[VerificationSignature] = None
+    scope_chain: Optional[List["Delegation"]] = None
     user_context: Optional[UserContext] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
 
@@ -66,7 +66,7 @@ class TrustedAgentCard:
         }
         return json.dumps(content, sort_keys=True, separators=(",", ":"))
 
-    def sign(self, identity: CMVKIdentity) -> None:
+    def sign(self, identity: VerificationIdentity) -> None:
         """Cryptographically sign this card with the given identity.
 
         Args:
@@ -104,8 +104,8 @@ class TrustedAgentCard:
         if self.card_signature:
             result["card_signature"] = self.card_signature.to_dict()
 
-        if self.delegation_chain:
-            result["delegation_chain"] = [d.to_dict() for d in self.delegation_chain]
+        if self.scope_chain:
+            result["scope_chain"] = [d.to_dict() for d in self.scope_chain]
 
         if self.user_context:
             result["user_context"] = self.user_context.to_dict()
@@ -117,15 +117,15 @@ class TrustedAgentCard:
         """Deserialize card from JSON dictionary."""
         identity = None
         if "identity" in data:
-            identity = CMVKIdentity.from_dict(data["identity"])
+            identity = VerificationIdentity.from_dict(data["identity"])
 
         card_signature = None
         if "card_signature" in data:
-            card_signature = CMVKSignature.from_dict(data["card_signature"])
+            card_signature = VerificationSignature.from_dict(data["card_signature"])
 
-        delegation_chain = None
-        if "delegation_chain" in data:
-            delegation_chain = [Delegation.from_dict(d) for d in data["delegation_chain"]]
+        scope_chain = None
+        if "scope_chain" in data:
+            scope_chain = [Delegation.from_dict(d) for d in data["scope_chain"]]
 
         user_context = None
         if "user_context" in data:
@@ -138,7 +138,7 @@ class TrustedAgentCard:
             identity=identity,
             trust_score=data.get("trust_score", 1.0),
             card_signature=card_signature,
-            delegation_chain=delegation_chain,
+            scope_chain=scope_chain,
             user_context=user_context,
             metadata=data.get("metadata", {}),
         )
@@ -151,7 +151,7 @@ class Delegation:
     delegator: str  # DID of the delegating agent
     delegatee: str  # DID of the receiving agent
     capabilities: List[str]
-    signature: Optional[CMVKSignature] = None
+    signature: Optional[VerificationSignature] = None
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     expires_at: Optional[datetime] = None
 
@@ -174,7 +174,7 @@ class Delegation:
         """Deserialize delegation from dictionary."""
         signature = None
         if "signature" in data:
-            signature = CMVKSignature.from_dict(data["signature"])
+            signature = VerificationSignature.from_dict(data["signature"])
 
         expires_at = None
         if "expires_at" in data:
@@ -195,7 +195,7 @@ class TrustHandshake:
 
     def __init__(
         self,
-        my_identity: CMVKIdentity,
+        my_identity: VerificationIdentity,
         policy: Optional[TrustPolicy] = None,
     ):
         """Initialize handshake handler.
@@ -256,7 +256,7 @@ class TrustHandshake:
             )
 
         # Verify DID format
-        if not peer_card.identity.did.startswith("did:cmvk:"):
+        if not peer_card.identity.did.startswith("did:verification:"):
             return TrustVerificationResult(
                 trusted=False,
                 trust_score=0.0,
@@ -291,13 +291,13 @@ class TrustHandshake:
                     verified_capabilities=verified_caps,
                 )
 
-        # Check delegation chain if present
-        if peer_card.delegation_chain:
-            # TODO: A full cryptographic verification of the delegation chain is needed.
+        # Check scope chain if present
+        if peer_card.scope_chain:
+            # TODO: A full cryptographic verification of the scope chain is needed.
             # This should verify the signature of each delegation and the integrity of the
             # entire chain. The current check for expiration is insufficient.
             warnings.append(
-                "Delegation chain is present but its cryptographic validity is not verified."
+                "Scope chain is present but its cryptographic validity is not verified."
             )
 
         # All checks passed
@@ -322,15 +322,15 @@ class TrustHandshake:
 class DelegationChain:
     """Manages a chain of trust delegations."""
 
-    def __init__(self, root_identity: CMVKIdentity):
-        """Initialize delegation chain.
+    def __init__(self, root_identity: VerificationIdentity):
+        """Initialize scope chain.
 
         Args:
             root_identity: The root authority identity
         """
         self.root_identity = root_identity
         self.delegations: List[Delegation] = []
-        self._known_identities: Dict[str, CMVKIdentity] = {
+        self._known_identities: Dict[str, VerificationIdentity] = {
             root_identity.did: root_identity
         }
 
@@ -339,7 +339,7 @@ class DelegationChain:
         delegatee: TrustedAgentCard,
         capabilities: List[str],
         expires_in_hours: Optional[int] = None,
-        delegator_identity: Optional[CMVKIdentity] = None,
+        delegator_identity: Optional[VerificationIdentity] = None,
     ) -> Delegation:
         """Add a delegation to the chain.
 
@@ -356,7 +356,7 @@ class DelegationChain:
             ValueError: If delegatee lacks identity
         """
         if not delegatee.identity:
-            raise ValueError("Delegatee must have a CMVKIdentity to be part of a delegation")
+            raise ValueError("Delegatee must have a VerificationIdentity to be part of a delegation")
 
         delegator = delegator_identity or self.root_identity
         delegatee_did = delegatee.identity.did
@@ -392,7 +392,7 @@ class DelegationChain:
         return delegation
 
     def verify(self) -> bool:
-        """Verify the entire delegation chain.
+        """Verify the entire scope chain.
 
         Returns:
             True if chain is valid, False otherwise

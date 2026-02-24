@@ -1,4 +1,4 @@
-"""Audit logging node with Merkle-chain tamper evidence for Flowise flows."""
+"""Audit logging node with hash chain tamper evidence for Flowise flows."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ from typing import Any
 
 @dataclass
 class AuditEntry:
-    """A single audit log entry in the Merkle chain."""
+    """A single audit log entry in the hash chain."""
 
     index: int
     timestamp: float
@@ -22,7 +22,7 @@ class AuditEntry:
 
 
 class AuditNode:
-    """Logs all inputs to a Merkle-chain audit trail with SHA-256 hash chaining.
+    """Logs all inputs to a hash chain audit trail with SHA-256 hash chaining.
 
     Provides tamper-evident logging for governance decisions in Flowise flows.
     """

@@ -1,6 +1,6 @@
 """Cryptographic identity management for AgentMesh.
 
-This module provides CMVK (Cryptographic Multi-Vector Keys) based identity
+This module provides verification (Cryptographic Multi-Vector Keys) based identity
 for LangChain agents, using Ed25519 for cryptographic operations.
 """
 
@@ -24,10 +24,10 @@ except ImportError:
 
 
 @dataclass
-class CMVKSignature:
-    """A cryptographic signature from a CMVK identity."""
+class VerificationSignature:
+    """A cryptographic signature from a verification identity."""
 
-    algorithm: str = "CMVK-Ed25519"
+    algorithm: str = "verification-Ed25519"
     public_key: str = ""
     signature: str = ""
     timestamp: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
@@ -42,11 +42,11 @@ class CMVKSignature:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "CMVKSignature":
+    def from_dict(cls, data: Dict[str, Any]) -> "VerificationSignature":
         """Deserialize signature from dictionary."""
         timestamp_str = data.get("timestamp")
         return cls(
-            algorithm=data.get("algorithm", "CMVK-Ed25519"),
+            algorithm=data.get("algorithm", "verification-Ed25519"),
             public_key=data.get("public_key", ""),
             signature=data.get("signature", ""),
             timestamp=(
@@ -58,8 +58,8 @@ class CMVKSignature:
 
 
 @dataclass
-class CMVKIdentity:
-    """Cryptographic identity for an agent using CMVK scheme.
+class VerificationIdentity:
+    """Cryptographic identity for an agent using verification scheme.
 
     Uses Ed25519 for real cryptographic signing and verification when the
     `cryptography` library is available, otherwise falls back to simulation
@@ -88,8 +88,8 @@ class CMVKIdentity:
     def generate(
         cls, agent_name: str, capabilities: Optional[List[str]] = None,
         ttl_seconds: Optional[int] = None,
-    ) -> "CMVKIdentity":
-        """Generate a new CMVK identity with Ed25519 key pair.
+    ) -> "VerificationIdentity":
+        """Generate a new verification identity with Ed25519 key pair.
 
         Args:
             agent_name: Human-readable name for the agent
@@ -97,12 +97,12 @@ class CMVKIdentity:
             ttl_seconds: Optional TTL in seconds (None = no expiry)
 
         Returns:
-            A new CMVKIdentity with generated keys
+            A new VerificationIdentity with generated keys
         """
         # Generate unique DID from agent name and timestamp
         seed = f"{agent_name}:{time.time_ns()}"
         did_hash = hashlib.sha256(seed.encode()).hexdigest()[:32]
-        did = f"did:cmvk:{did_hash}"
+        did = f"did:verification:{did_hash}"
 
         if CRYPTO_AVAILABLE:
             # Generate real Ed25519 key pair
@@ -134,14 +134,14 @@ class CMVKIdentity:
             ),
         )
 
-    def sign(self, data: str) -> CMVKSignature:
+    def sign(self, data: str) -> VerificationSignature:
         """Sign data with this identity's private key.
 
         Args:
             data: String data to sign
 
         Returns:
-            CMVKSignature containing the signature
+            VerificationSignature containing the signature
 
         Raises:
             ValueError: If private key is not available
@@ -163,12 +163,12 @@ class CMVKIdentity:
                 hashlib.sha256(sig_input.encode()).digest()
             ).decode("ascii")
 
-        return CMVKSignature(
+        return VerificationSignature(
             public_key=self.public_key,
             signature=signature_b64,
         )
 
-    def verify_signature(self, data: str, signature: CMVKSignature) -> bool:
+    def verify_signature(self, data: str, signature: VerificationSignature) -> bool:
         """Verify a signature against this identity's public key.
 
         Args:
@@ -210,7 +210,7 @@ class CMVKIdentity:
         return result
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "CMVKIdentity":
+    def from_dict(cls, data: Dict[str, Any]) -> "VerificationIdentity":
         """Deserialize identity from dictionary."""
         created_str = data.get("created_at")
         expires_str = data.get("expires_at")
@@ -231,9 +231,9 @@ class CMVKIdentity:
             ),
         )
 
-    def public_identity(self) -> "CMVKIdentity":
+    def public_identity(self) -> "VerificationIdentity":
         """Return a copy of this identity without the private key."""
-        return CMVKIdentity(
+        return VerificationIdentity(
             did=self.did,
             agent_name=self.agent_name,
             public_key=self.public_key,

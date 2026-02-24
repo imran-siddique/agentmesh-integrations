@@ -35,16 +35,16 @@ AgentMesh core is a lean, zero-external-dependency library. Platform integration
 
 | Integration | Package | Status | Description |
 |---|---|---|---|
-| [LangChain](langchain-agentmesh/) | `langchain-agentmesh` | ✅ Stable | Ed25519 identity, trust-gated tools, delegation chains, callbacks |
+| [LangChain](langchain-agentmesh/) | `langchain-agentmesh` | ✅ Stable | Ed25519 identity, trust-gated tools, scope chains, callbacks |
 | [LangGraph](langgraph-trust/) | [`langgraph-trust`](https://pypi.org/project/langgraph-trust/) | ✅ Published (PyPI) | Trust-gated checkpoint nodes, governance policy enforcement, trust-aware routing |
-| [LlamaIndex](llamaindex-agentmesh/) | `llama-index-agent-agentmesh` | ✅ Merged Upstream | Trust-verified workers, identity-aware query engines, delegation chains |
+| [LlamaIndex](llamaindex-agentmesh/) | `llama-index-agent-agentmesh` | ✅ Merged Upstream | Trust-verified workers, identity-aware query engines, scope chains |
 | [Agent Lightning](agent-lightning/) | — | ✅ Merged Upstream | Agent-OS governance adapters, reward shaping, governed RL training |
 | [Dify Plugin](dify-plugin/) | `agentmesh-trust-layer` | ✅ Stable | Packaged `.difypkg` with peer verification, step auth, trust scoring |
 | [Dify Middleware](dify/) | — | 📦 Archived | Flask middleware (archived — use the plugin instead) |
 | [Moltbook](moltbook/) | — | ✅ Stable | AgentMesh governance skill for [Moltbook](https://moltbook.com) agent registry |
 | [Nostr Web of Trust](nostr-wot/) | `agentmesh-nostr-wot` | 🚧 Scaffold | Trust scoring via [MaximumSats](https://github.com/joelklabo/maximumsats-mcp) NIP-85 WoT |
 | [OpenAI Agents](openai-agents-trust/) | [`openai-agents-trust`](https://pypi.org/project/openai-agents-trust/) | ✅ Published (PyPI) | Trust guardrails, policy enforcement, governance hooks, trust-gated handoffs for OpenAI Agents SDK |
-| [OpenClaw Skill](openclaw-skill/) | [`agentmesh-governance`](https://clawhub.ai/imran-siddique/agentmesh-governance) | ✅ Published (ClawHub) | Governance skill for [OpenClaw](https://openclaw.im) agents — policy enforcement, trust scoring, Ed25519 DIDs, Merkle audit |
+| [OpenClaw Skill](openclaw-skill/) | [`agentmesh-governance`](https://clawhub.ai/imran-siddique/agentmesh-governance) | ✅ Published (ClawHub) | Governance skill for [OpenClaw](https://openclaw.im) agents — policy enforcement, trust scoring, Ed25519 DIDs, hash-chain audit |
 
 ## Quick Start
 
@@ -55,10 +55,10 @@ pip install langchain-agentmesh
 ```
 
 ```python
-from langchain_agentmesh import CMVKIdentity, TrustGatedTool, TrustedToolExecutor
+from langchain_agentmesh import VerificationIdentity, TrustGatedTool, TrustedToolExecutor
 
 # Generate cryptographic identity (Ed25519)
-identity = CMVKIdentity.generate("research-agent", capabilities=["search", "summarize"])
+identity = VerificationIdentity.generate("research-agent", capabilities=["search", "summarize"])
 
 # Wrap any tool with trust requirements
 gated_tool = TrustGatedTool(
@@ -96,7 +96,7 @@ from agentmesh_nostr_wot import NostrWoTProvider
 provider = NostrWoTProvider(wot_api="https://wot.klabo.world")
 engine = TrustEngine(external_providers=[provider])
 
-# Composite score: AgentMesh CMVK + Nostr WoT
+# Composite score: AgentMesh verification + Nostr WoT
 score = await engine.get_trust_score("agent-123")
 ```
 
@@ -108,7 +108,7 @@ score = await engine.get_trust_score("agent-123")
 agentmesh (core library)              agentmesh-integrations (this repo)
 ┌──────────────────────┐             ┌─────────────────────────────────┐
 │  TrustProvider       │◄─implements─│  NostrWoTProvider               │
-│  CMVKIdentity        │◄─uses───────│  LangChain identity.py          │
+│  VerificationIdentity        │◄─uses───────│  LangChain identity.py          │
 │  TrustEngine         │◄─extends────│  Dify trust_manager.py          │
 │  TransportLayer      │◄─implements─│  (future: NATS, gRPC, etc.)     │
 │  StorageProvider     │◄─implements─│  (future: Redis, Postgres, etc.)│

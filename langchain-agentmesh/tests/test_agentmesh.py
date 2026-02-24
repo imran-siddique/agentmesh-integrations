@@ -3,8 +3,8 @@
 import pytest
 from datetime import datetime, timedelta, timezone
 from langchain_agentmesh import (
-    CMVKIdentity,
-    CMVKSignature,
+    VerificationIdentity,
+    VerificationSignature,
     TrustedAgentCard,
     TrustHandshake,
     TrustPolicy,
@@ -17,17 +17,17 @@ from langchain_agentmesh import (
 )
 
 
-class TestCMVKIdentity:
-    """Tests for CMVKIdentity class."""
+class TestVerificationIdentity:
+    """Tests for VerificationIdentity class."""
 
     def test_generate_identity(self):
         """Test identity generation."""
-        identity = CMVKIdentity.generate(
+        identity = VerificationIdentity.generate(
             agent_name="test-agent",
             capabilities=["read", "write"]
         )
         
-        assert identity.did.startswith("did:cmvk:")
+        assert identity.did.startswith("did:verification:")
         assert identity.agent_name == "test-agent"
         assert identity.public_key
         assert identity.private_key
@@ -35,7 +35,7 @@ class TestCMVKIdentity:
 
     def test_sign_and_verify(self):
         """Test signing and verification."""
-        identity = CMVKIdentity.generate("signer-agent")
+        identity = VerificationIdentity.generate("signer-agent")
         data = "test data to sign"
         
         signature = identity.sign(data)
@@ -46,7 +46,7 @@ class TestCMVKIdentity:
 
     def test_verify_fails_wrong_data(self):
         """Test verification fails with wrong data."""
-        identity = CMVKIdentity.generate("signer-agent")
+        identity = VerificationIdentity.generate("signer-agent")
         signature = identity.sign("original data")
         
         # Verification should fail with different data
@@ -54,7 +54,7 @@ class TestCMVKIdentity:
 
     def test_public_identity(self):
         """Test public identity excludes private key."""
-        identity = CMVKIdentity.generate("test-agent")
+        identity = VerificationIdentity.generate("test-agent")
         public = identity.public_identity()
         
         assert public.did == identity.did
@@ -67,7 +67,7 @@ class TestTrustedAgentCard:
 
     def test_create_and_sign_card(self):
         """Test card creation and signing."""
-        identity = CMVKIdentity.generate("card-agent", ["capability1"])
+        identity = VerificationIdentity.generate("card-agent", ["capability1"])
         
         card = TrustedAgentCard(
             name="Test Agent",
@@ -82,7 +82,7 @@ class TestTrustedAgentCard:
 
     def test_serialization(self):
         """Test card JSON serialization."""
-        identity = CMVKIdentity.generate("json-agent")
+        identity = VerificationIdentity.generate("json-agent")
         card = TrustedAgentCard(
             name="JSON Agent",
             description="Tests JSON",
@@ -103,8 +103,8 @@ class TestTrustHandshake:
 
     def test_verify_valid_peer(self):
         """Test verification of a valid peer."""
-        my_identity = CMVKIdentity.generate("my-agent")
-        peer_identity = CMVKIdentity.generate("peer-agent", ["required_cap"])
+        my_identity = VerificationIdentity.generate("my-agent")
+        peer_identity = VerificationIdentity.generate("peer-agent", ["required_cap"])
         
         peer_card = TrustedAgentCard(
             name="Peer Agent",
@@ -124,8 +124,8 @@ class TestTrustHandshake:
 
     def test_verify_missing_capability(self):
         """Test verification fails for missing capability."""
-        my_identity = CMVKIdentity.generate("my-agent")
-        peer_identity = CMVKIdentity.generate("peer-agent", ["cap1"])
+        my_identity = VerificationIdentity.generate("my-agent")
+        peer_identity = VerificationIdentity.generate("peer-agent", ["cap1"])
         
         peer_card = TrustedAgentCard(
             name="Peer Agent",
@@ -145,8 +145,8 @@ class TestTrustHandshake:
 
     def test_cache_ttl(self):
         """Test that verification results are cached."""
-        my_identity = CMVKIdentity.generate("my-agent")
-        peer_identity = CMVKIdentity.generate("peer-agent")
+        my_identity = VerificationIdentity.generate("my-agent")
+        peer_identity = VerificationIdentity.generate("peer-agent")
         
         peer_card = TrustedAgentCard(
             name="Peer Agent",
@@ -170,8 +170,8 @@ class TestDelegationChain:
 
     def test_add_delegation(self):
         """Test adding a delegation."""
-        root = CMVKIdentity.generate("root-agent")
-        worker_identity = CMVKIdentity.generate("worker-agent")
+        root = VerificationIdentity.generate("root-agent")
+        worker_identity = VerificationIdentity.generate("worker-agent")
         
         worker_card = TrustedAgentCard(
             name="Worker",
@@ -193,8 +193,8 @@ class TestDelegationChain:
 
     def test_verify_chain(self):
         """Test chain verification."""
-        root = CMVKIdentity.generate("root-agent")
-        worker_identity = CMVKIdentity.generate("worker-agent")
+        root = VerificationIdentity.generate("root-agent")
+        worker_identity = VerificationIdentity.generate("worker-agent")
         
         worker_card = TrustedAgentCard(
             name="Worker",
@@ -217,8 +217,8 @@ class TestTrustGatedTool:
 
     def test_can_invoke_with_capability(self):
         """Test capability check for tool invocation."""
-        my_identity = CMVKIdentity.generate("executor")
-        invoker_identity = CMVKIdentity.generate("invoker", ["database"])
+        my_identity = VerificationIdentity.generate("executor")
+        invoker_identity = VerificationIdentity.generate("invoker", ["database"])
         
         def mock_tool(query: str) -> str:
             return f"Result: {query}"
@@ -246,7 +246,7 @@ class TestTrustCallbackHandler:
 
     def test_event_logging(self):
         """Test that events are logged."""
-        identity = CMVKIdentity.generate("callback-agent")
+        identity = VerificationIdentity.generate("callback-agent")
         policy = TrustPolicy(audit_all_calls=True)
         
         handler = TrustCallbackHandler(identity, policy)
@@ -267,7 +267,7 @@ class TestTrustCallbackHandler:
 
     def test_trust_summary(self):
         """Test trust summary generation."""
-        identity = CMVKIdentity.generate("summary-agent")
+        identity = VerificationIdentity.generate("summary-agent")
         handler = TrustCallbackHandler(identity)
         
         summary = handler.get_trust_summary()
@@ -277,18 +277,18 @@ class TestTrustCallbackHandler:
         assert "verification_rate" in summary
 
 
-class TestCMVKIdentityTTL:
-    """Tests for CMVKIdentity TTL support."""
+class TestVerificationIdentityTTL:
+    """Tests for VerificationIdentity TTL support."""
 
     def test_generate_without_ttl(self):
         """Identity without TTL never expires."""
-        identity = CMVKIdentity.generate("no-ttl-agent")
+        identity = VerificationIdentity.generate("no-ttl-agent")
         assert identity.expires_at is None
         assert not identity.is_expired()
 
     def test_generate_with_ttl(self):
         """Identity with TTL has expiration set."""
-        identity = CMVKIdentity.generate("ttl-agent", ttl_seconds=3600)
+        identity = VerificationIdentity.generate("ttl-agent", ttl_seconds=3600)
         assert identity.expires_at is not None
         assert not identity.is_expired()
         # Should expire roughly 1 hour from now
@@ -297,24 +297,24 @@ class TestCMVKIdentityTTL:
 
     def test_expired_identity(self):
         """Manually expired identity reports correctly."""
-        identity = CMVKIdentity.generate("expired-agent", ttl_seconds=1)
+        identity = VerificationIdentity.generate("expired-agent", ttl_seconds=1)
         # Force expiration
         identity.expires_at = datetime.now(timezone.utc) - timedelta(seconds=10)
         assert identity.is_expired()
 
     def test_ttl_survives_serialization(self):
         """TTL round-trips through to_dict/from_dict."""
-        identity = CMVKIdentity.generate("serial-agent", ttl_seconds=900)
+        identity = VerificationIdentity.generate("serial-agent", ttl_seconds=900)
         data = identity.to_dict()
         assert "expires_at" in data
 
-        restored = CMVKIdentity.from_dict(data)
+        restored = VerificationIdentity.from_dict(data)
         assert restored.expires_at is not None
         assert not restored.is_expired()
 
     def test_ttl_in_public_identity(self):
         """Public identity preserves expiration."""
-        identity = CMVKIdentity.generate("pub-agent", ttl_seconds=600)
+        identity = VerificationIdentity.generate("pub-agent", ttl_seconds=600)
         public = identity.public_identity()
         assert public.expires_at == identity.expires_at
         assert public.private_key is None
@@ -364,7 +364,7 @@ class TestUserContext:
 
     def test_user_context_on_agent_card(self):
         """UserContext propagates through TrustedAgentCard."""
-        identity = CMVKIdentity.generate("obo-agent", ["read:data"])
+        identity = VerificationIdentity.generate("obo-agent", ["read:data"])
         ctx = UserContext.create(user_id="end-user-1", roles=["analyst"])
 
         card = TrustedAgentCard(
@@ -391,7 +391,7 @@ class TestAgentDirectory:
     def test_register_and_find(self):
         """Register an agent and find by DID."""
         directory = AgentDirectory()
-        identity = CMVKIdentity.generate("discoverable-agent", ["search"])
+        identity = VerificationIdentity.generate("discoverable-agent", ["search"])
 
         card = TrustedAgentCard(
             name="Discoverable",
@@ -410,7 +410,7 @@ class TestAgentDirectory:
         directory = AgentDirectory()
 
         for name, caps in [("agent-a", ["read"]), ("agent-b", ["write"]), ("agent-c", ["read", "write"])]:
-            identity = CMVKIdentity.generate(name, caps)
+            identity = VerificationIdentity.generate(name, caps)
             card = TrustedAgentCard(name=name, description="", capabilities=caps)
             card.sign(identity)
             directory.register(card)
@@ -425,7 +425,7 @@ class TestAgentDirectory:
         """Filter agents by trust score."""
         directory = AgentDirectory()
 
-        identity = CMVKIdentity.generate("trusted-agent")
+        identity = VerificationIdentity.generate("trusted-agent")
         card = TrustedAgentCard(
             name="Trusted",
             description="High trust",
@@ -435,7 +435,7 @@ class TestAgentDirectory:
         card.sign(identity)
         directory.register(card)
 
-        identity_low = CMVKIdentity.generate("low-trust-agent")
+        identity_low = VerificationIdentity.generate("low-trust-agent")
         card_low = TrustedAgentCard(
             name="Low Trust",
             description="Below threshold",
@@ -463,7 +463,7 @@ class TestAgentDirectory:
     def test_remove(self):
         """Remove an agent from directory."""
         directory = AgentDirectory()
-        identity = CMVKIdentity.generate("removable-agent")
+        identity = VerificationIdentity.generate("removable-agent")
         card = TrustedAgentCard(name="Remove Me", description="", capabilities=[])
         card.sign(identity)
         directory.register(card)
